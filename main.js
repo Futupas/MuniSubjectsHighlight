@@ -4,11 +4,7 @@
     const COLOR_SUCCESS = '#dfd';
     const COLOR_FAIL = '#fdd';
     const COLOR_NOT_MARKED = '#ddf';
-    const CONSOLE_INFO_TEXT = 'Enter your marks url to the prompt window and press ok';
-    const PROMPT_TEXT = 'Enter your marks url here';
-    const PROMPT_ERROR_TEXT = 'Your links seems to be invalid';
-    const FINAL_TEXT = 'Done. Enjoy)';
-    const PROMPT_DEFAULT = 'https://is.muni.cz/auth/student/moje_znamky?studium=1186739;vsob=1';
+    const FINAL_TEXT = 'Done. Enjoy:)';
     const HIDE_TABLE = true; // You can set to false if you don't wanna hide the table
 
     main();
@@ -17,8 +13,7 @@
     async function main() {
         const subjects = getTemplateSubjects();
 
-        const src = await getSrc();
-        const iframe = await createIframe(src);
+        const iframe = await createIframe('https://is.muni.cz/auth/student/moje_znamky?vsob=1');
         
         const successDict = getSuccessDict(getSubjectsList(iframe.contentWindow.document.body));
         
@@ -62,22 +57,6 @@
                 code, element
             }
         });
-    }
-
-    async function getSrc() {
-        console.log(CONSOLE_INFO_TEXT);
-        const src = prompt(PROMPT_TEXT, PROMPT_DEFAULT);
-
-        const request = await fetch(src);
-        
-        if (!request.ok) {
-            console.error(PROMPT_ERROR_TEXT);
-            alert(PROMPT_ERROR_TEXT);
-
-            return await getSrc();
-        }
-
-        return src;
     }
 
     function createIframe(src) {
@@ -164,7 +143,6 @@
             .map(getSubjectFromTr);
         
         return [ ...arr1, ...arr2 ];
-        // return [ ...arr1, ...arr2 ].filter(x => x.isOk !== x.isNotOk); // Those who are neither ok, nor nok are not marked yet
     }
 
     function getSuccessDict(subjects) {
