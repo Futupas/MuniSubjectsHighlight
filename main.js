@@ -1,4 +1,54 @@
 (() => {
+    'use strict';
+
+    main();
+
+
+
+    async function main() {
+        const src = await getSrc();
+        const iframe = await createIframe(src);
+        
+        const allSubjects = getSubjectsList(iframe.contentWindow.document.body);
+        const successDict = getSuccessDict(allSubjects);
+        
+        console.log(successDict);
+    }
+
+
+    async function getSrc() {
+        console.log('some info');
+        const src = prompt('give me url to your marks page', 'https://is.muni.cz/auth/student/moje_znamky?studium=1186739;vsob=1');
+
+        const request = await fetch(src);
+        
+        if (!request.ok) {
+            console.error('error fetching data');
+            alert('error fetching data');
+
+            return await getSrc();
+        }
+
+        return src;
+    }
+
+    function createIframe(src) {
+        return new Promise((resolve, reject) => {
+            try {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.onload = _ => {
+                    resolve(iframe);
+                };
+                iframe.src = src;
+                document.body.appendChild(iframe);
+            }
+            catch (ex) {
+                reject(ex);
+            }
+        });
+    }
+
 
     function distinctFilter(value, index, array) {
         return array.indexOf(value) === index;
@@ -90,9 +140,5 @@
         return dict;
     }
     
-    const allSubjects = getSubjectsList(document.body);
-    const successDict = getSuccessDict(allSubjects);
-
-    return successDict;
 })();
 
