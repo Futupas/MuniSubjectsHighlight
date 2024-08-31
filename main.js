@@ -4,10 +4,10 @@
     const COLOR_SUCCESS = '#dfd';
     const COLOR_FAIL = '#fdd';
     const COLOR_NOT_MARKED = '#ddf';
-    const CONSOLE_INFO_TEXT = 'console info text';
-    const PROMPT_TEXT = 'prompt text';
-    const PROMPT_ERROR_TEXT = 'prompt error text';
-    const FINAL_TEXT = 'done';
+    const CONSOLE_INFO_TEXT = 'Enter your marks url to the prompt window and press ok';
+    const PROMPT_TEXT = 'Enter your marks url here';
+    const PROMPT_ERROR_TEXT = 'Your links seems to be invalid';
+    const FINAL_TEXT = 'Done. Enjoy)';
     const PROMPT_DEFAULT = 'https://is.muni.cz/auth/student/moje_znamky?studium=1186739;vsob=1';
     const HIDE_TABLE = true; // You can set to false if you don't wanna hide the table
 
@@ -173,7 +173,6 @@
         const dict = {};
         
         for (const code of codes) {
-            // const trials = subjects.filter(x => x.code === code);
             // todo mb some refactoring
 
             const markedTrials = subjects.filter(x => x.code === code && x.isMarked);
