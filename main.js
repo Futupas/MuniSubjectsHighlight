@@ -1,11 +1,10 @@
 (() => {
     'use strict';
 
+    const HIDE_TABLE = true; // You can set to false if you don't wanna hide the table
     const COLOR_SUCCESS = '#dfd';
     const COLOR_FAIL = '#fdd';
     const COLOR_NOT_MARKED = '#ddf';
-    const FINAL_TEXT = 'Done. Enjoy:)';
-    const HIDE_TABLE = true; // You can set to false if you don't wanna hide the table
 
     main();
 
@@ -24,7 +23,7 @@
         colorPage(subjects, successDict);
 
         console.log('Step 5/5: Finish');
-        console.log(FINAL_TEXT);
+        console.log('Done. Enjoy:)');
     }
 
 
