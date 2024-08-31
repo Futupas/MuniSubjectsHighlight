@@ -11,14 +11,19 @@
 
 
     async function main() {
+        console.log('Step 1/5: Getting subjects');
         const subjects = getTemplateSubjects();
 
+        console.log('Step 2/5: Getting marks');
         const iframe = await createIframe('https://is.muni.cz/auth/student/moje_znamky?vsob=1');
         
+        console.log('Step 3/5: Processing data');
         const successDict = getSuccessDict(getSubjectsList(iframe.contentWindow.document.body));
         
+        console.log('Step 4/5: Coloring the page');
         colorPage(subjects, successDict);
 
+        console.log('Step 5/5: Finish');
         console.log(FINAL_TEXT);
     }
 
@@ -34,6 +39,16 @@
 
             const isMarked = successDict[subject.code].isMarked;
             const isSuccess = successDict[subject.code].isSuccessfull;
+
+            try {
+                const children = subject.element.childNodes;
+                const name = children[2];
+                const markPart = successDict[subject.code].mark?.trim().length ? `, mark ${successDict[subject.code].mark}` : '';
+                name.textContent += ` (${successDict[subject.code].credits} kr${markPart})`
+            }
+            catch (ex) {
+                console.error(ex);
+            }
 
             if (!isMarked) {
                 subject.element.style.backgroundColor = COLOR_NOT_MARKED;
@@ -145,6 +160,19 @@
         return [ ...arr1, ...arr2 ];
     }
 
+
+    function sortTrialsComparator(a, b) {
+        if (a.isSuccessfull !== b.isSuccessfull) {
+            return a.isSuccessfull ? -1 : 1;
+        }
+
+        if (a.isMarked !== b.isMarked) {
+            return a.isMarked ? -1 : 1;
+        }
+
+        return 0;
+    }
+
     function getSuccessDict(subjects) {
         const codes = subjects.map(x => x.code).filter(distinctFilter);
         
@@ -153,13 +181,22 @@
         for (const code of codes) {
             // todo mb some refactoring
 
-            const markedTrials = subjects.filter(x => x.code === code && x.isMarked);
+            const allTrials = subjects.filter(x => x.code === code);
+            const markedTrials = allTrials.filter(x => x.isMarked);
             
             const isSuccessfull = !!markedTrials.filter(x => x.isOk).length;
             const isMarked = !!markedTrials.length;
-            const name = subjects.filter(x => x.code === code)[0].name;
-            
-            dict[code] = { name, isMarked, isSuccessfull };
+
+            allTrials.sort(sortTrialsComparator);
+            const best = allTrials[0];
+
+            dict[code] = {
+                name: best.name, 
+                isMarked, 
+                isSuccessfull, 
+                credits: best.credits, 
+                mark: best.mark
+            };
         }
         
         return dict;

@@ -4,14 +4,14 @@
 > This is a beta-version, it may contain some bugs. If you fing one please let me know at futupas@gmail.com or via telegram
 
 ## What does it do
-It helps to see your progress in passing necessary subjects in MUNI. It will highlight your subjects and you will see very nicely what you should take to finish the study
+It helps to see your progress in passing necessary subjects in MUNI. It will highlight your subjects and you will see very nicely what you should take to finish the study. Apart from that it will show credist for each marked subjects and credits for this
 
 ## How does it work
-It takes your marks and highlights subjects in your template.
-Meaning: 
+It takes your marks and highlights subjects in your template. Also you will see how many credits have you gained for this subject and which ,ark did you have.
+Colors meaning: 
 * Green color - You passed this subject (at least once)
 * Red color - You failed this subject (and have no successfull trial)
-* Blue color - You have this subject, but it is not marked yet
+* Blue color - You have this subject, but it is not marked yet (usually, you have it in current semester and it is not marked)
 
 ## How to use it
 1. Find file named `main.js` in this repo
