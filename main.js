@@ -1,30 +1,78 @@
 (() => {
     'use strict';
 
+    const COLOR_SUCCESS = '#dfd';
+    const COLOR_FAIL = '#fdd';
+    const COLOR_NOT_MARKED = '#ddf';
+    const CONSOLE_INFO_TEXT = 'console info text';
+    const PROMPT_TEXT = 'prompt text';
+    const PROMPT_ERROR_TEXT = 'prompt error text';
+    const FINAL_TEXT = 'done';
+    const PROMPT_DEFAULT = 'https://is.muni.cz/auth/student/moje_znamky?studium=1186739;vsob=1';
+    const HIDE_TABLE = true; // You can set to false if you don't wanna hide the table
+
     main();
 
 
-
     async function main() {
+        const subjects = getTemplateSubjects();
+
         const src = await getSrc();
         const iframe = await createIframe(src);
         
-        const allSubjects = getSubjectsList(iframe.contentWindow.document.body);
-        const successDict = getSuccessDict(allSubjects);
+        const successDict = getSuccessDict(getSubjectsList(iframe.contentWindow.document.body));
         
-        console.log(successDict);
+        colorPage(subjects, successDict);
+
+        console.log(FINAL_TEXT);
     }
 
 
+    function colorPage(subjects, successDict) {
+        for (const subject of subjects) {
+            if (HIDE_TABLE) {
+                subject.element.querySelector('table').style.display = 'none';
+            }
+
+            const exists = subject.code in successDict;
+            if (!exists) continue;
+
+            const isMarked = successDict[subject.code].isMarked;
+            const isSuccess = successDict[subject.code].isSuccessfull;
+
+            if (!isMarked) {
+                subject.element.style.backgroundColor = COLOR_NOT_MARKED;
+                continue;
+            }
+
+            subject.element.style.backgroundColor = isSuccess ? COLOR_SUCCESS : COLOR_FAIL;
+        }
+    }
+
+
+    function getTemplateSubjects() {
+        const subjects = Array.from(document.querySelectorAll('li'))
+            .filter(x => x.querySelector('table') && x.querySelector('a.okno'));
+
+        return subjects.map(x => {
+            const element = x;
+            const code = x.innerText.trim().split(' ', 1)[0];
+            if (!code.length || !code.includes(':')) console.error('Unknown code: ', code);
+            return {
+                code, element
+            }
+        });
+    }
+
     async function getSrc() {
-        console.log('some info');
-        const src = prompt('give me url to your marks page', 'https://is.muni.cz/auth/student/moje_znamky?studium=1186739;vsob=1');
+        console.log(CONSOLE_INFO_TEXT);
+        const src = prompt(PROMPT_TEXT, PROMPT_DEFAULT);
 
         const request = await fetch(src);
         
         if (!request.ok) {
-            console.error('error fetching data');
-            alert('error fetching data');
+            console.error(PROMPT_ERROR_TEXT);
+            alert(PROMPT_ERROR_TEXT);
 
             return await getSrc();
         }

@@ -1,13 +1,18 @@
 (() => {
-    const subjects = Array
-        .from(document.querySelectorAll('tr.elem_vsechna_obdobi:not(.vyrazne)'))
-        .filter(x => !!x.querySelector('td') && !x.querySelector('th'));
-    
-    const subject = subjects[0];
-    const tds = Array.from(subject.querySelectorAll('td'));
-	const nameTd =     tds[0];
+    function getTemplateSubjects() {
+        const subjects = Array.from(document.querySelectorAll('li'))
+            .filter(x => x.querySelector('table') && x.querySelector('a.okno'));
 
-    const x = nameTd.childNodes;
-    return x[1].textContent;
+        return subjects.map(x => {
+            const element = x;
+            const code = x.innerText.trim().split(' ', 1)[0];
+            if (!code.length || !code.includes(':')) console.error('Unknown code: ', code);
+            return {
+                code, element
+            }
+        });
+    }
+
+    return getTemplateSubjects();
 
 })();
