@@ -14,13 +14,13 @@ Array.from(document.querySelectorAll('tr.elem_vsechna_obdobi:not(.vyrazne)'))
 	const commentTd =  tds[5]
 	const setByTd =    tds[6];
 
-	const code = nameTd.children[0].querySelector('b > a')?.innerHTML;
-	const link = nameTd.children[0].querySelector('b > a')?.getAttribute('href');
-	const name = nameTd.children[1];
+	const code = nameTd.childNodes[0].querySelector('b > a')?.textContent;
+	const link = nameTd.childNodes[0].querySelector('b > a')?.getAttribute('href');
+	const name = nameTd.childNodes[1]?.textContent;
 
 	const credits = creditsTd.innerText;
 	const ending = endingTd.innerText;
-	const mark = markTd.querySelector('strong')?.children[1]?.innerHTML;
+	const mark = markTd.querySelector('strong')?.childNodes[1]?.textContent;
 	const markDate = markDateTd.innerText;
 
 	const comment = commentTd.innerText;
@@ -45,7 +45,7 @@ Array.from(document.querySelectorAll('tr.elem_vsechna_obdobi:not(.vyrazne)'))
 		comment,
 		setBy,
 	};
-})
+});
 
 
 
