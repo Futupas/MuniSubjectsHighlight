@@ -33,13 +33,17 @@
         const isOk = markTd.classList.contains('ok');
         const isNotOk = markTd.classList.contains('ko');
     
-        if (isOk === isNotOk) {
+        if (isOk && isNotOk) {
             console.error('Subject is ok and nok at the same time', code, tr);
         }
+
+        const isMarked = isOk || isNotOk;
     
         return {
             code,
             isOk,
+            isNotOk,
+            isMarked,
             name,
             link,
             credits,
@@ -52,10 +56,17 @@
     }
 
     function getSubjectsList(body) {
-        return Array
+        const arr1 = Array
             .from(body.querySelectorAll('tr.elem_vsechna_obdobi:not(.vyrazne)'))
             .filter(x => !!x.querySelector('td') && !x.querySelector('th'))
             .map(getSubjectFromTr);
+        const arr2 = Array
+            .from(body.querySelectorAll('tr.elem_vybrane_obdobi:not(.vyrazne)'))
+            .filter(x => !!x.querySelector('td') && !x.querySelector('th'))
+            .map(getSubjectFromTr);
+        
+        return [ ...arr1, ...arr2 ];
+        // return [ ...arr1, ...arr2 ].filter(x => x.isOk !== x.isNotOk); // Those who are neither ok, nor nok are not marked yet
     }
 
     function getSuccessDict(subjects) {
@@ -66,11 +77,14 @@
         for (const code of codes) {
             // const trials = subjects.filter(x => x.code === code);
             // todo mb some refactoring
+
+            const markedTrials = subjects.filter(x => x.code === code && x.isMarked);
             
-            const isSuccessfull = !!subjects.filter(x => x.code === code && x.isOk).length;
+            const isSuccessfull = !!markedTrials.filter(x => x.isOk).length;
+            const isMarked = !!markedTrials.length;
             const name = subjects.filter(x => x.code === code)[0].name;
             
-            dict[code] = { name, isSuccessfull };
+            dict[code] = { name, isMarked, isSuccessfull };
         }
         
         return dict;
